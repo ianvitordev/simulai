@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mvn -v)",
+      "PowerShell($m = Get-Command mvn -ErrorAction SilentlyContinue; if \\($m\\) { $m.Source; & mvn -v } else { \"MVN_NAO_ENCONTRADO\" }; Test-Path \".\\\\mvnw.cmd\")",
+      "PowerShell(& \".\\\\mvnw.cmd\" -q -DskipTests clean compile 2>&1)",
+      "PowerShell(\"JAVA_HOME=$env:JAVA_HOME\"; java -version; Write-Output \"---- JDKs instalados ----\"; Get-ChildItem \"C:\\\\Program Files\\\\Java\",\"C:\\\\Program Files\\\\Eclipse Adoptium\",\"$env:LOCALAPPDATA\\\\Programs\\\\Eclipse Adoptium\" -ErrorAction SilentlyContinue | Select-Object FullName)",
+      "PowerShell(& \".\\\\mvnw.cmd\" -q -DskipTests -Djava.version=17 clean compile 2>&1)",
+      "PowerShell(& \".\\\\mvnw.cmd\" -q -DskipTests \"-Djava.version=17\" clean compile 2>&1)",
+      "Bash(xxd src/main/java/SimulaI/mapper/UsuarioMapper.java)"
+    ]
+  }
+}

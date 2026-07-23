@@ -1,0 +1,84 @@
+spring:
+  application:
+    name: SimulaI
+
+  # Credenciais via env var com fallback de dev (mesmo padrão do JWT_SECRET/ADMIN_SENHA) —
+  # em produção, defina DB_URL/DB_USERNAME/DB_PASSWORD reais.
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/simulai}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:root}
+
+  jpa:
+    hibernate:
+      # "update" só serve para desenvolvimento (deixa o Hibernate gerar/ajustar o schema
+      # a partir das entidades). Antes de produção, trocar por "validate" + migrations
+      # versionadas (Flyway/Liquibase) — ainda não implementado neste projeto.
+      ddl-auto: update
+    show-sql: false
+
+  # Etapa 10: Chat + Embedding são usados (geração de questões + RAG). Image/audio/
+  # moderation seguem excluídos porque exigem API key só de estarem no classpath, mesmo
+  # sem nenhum bean seu em uso.
+  autoconfigure:
+    exclude:
+      - org.springframework.ai.model.openai.autoconfigure.OpenAiImageAutoConfiguration
+      - org.springframework.ai.model.openai.autoconfigure.OpenAiAudioSpeechAutoConfiguration
+      - org.springframework.ai.model.openai.autoconfigure.OpenAiAudioTranscriptionAutoConfiguration
+      - org.springframework.ai.model.openai.autoconfigure.OpenAiModerationAutoConfiguration
+
+  ai:
+    openai:
+      # Chave "pai": só serve de fallback caso chat/embedding não definam a própria (ver
+      # abaixo). Não configuramos nada aqui de propósito — cada seção tem seu provedor.
+      api-key: sem-uso-configure-por-secao-abaixo
+
+      # Geração de questões via Groq (gratuito, API compatível com a da OpenAI — por isso
+      # basta apontar base-url/api-key/model pra Groq, sem trocar starter nem código).
+      # Chave grátis em https://console.groq.com/keys. Sem GROQ_API_KEY definida, a app
+      # sobe normal mas /api/questoes/gerar-ia falha com 502 (GeracaoIAException).
+      chat:
+        base-url: ${GROQ_BASE_URL:https://api.groq.com/openai}
+        api-key: ${GROQ_API_KEY:configure-uma-chave-groq-gratuita-antes-de-usar-a-geracao-por-ia}
+        options:
+          model: ${GROQ_MODEL:llama-3.3-70b-versatile}
+          temperature: 0.7
+
+      # Embeddings (RAG): Groq não oferece endpoint de embeddings, então esta seção
+      # continua na OpenAI de verdade (paga). Sem OPENAI_API_KEY definida, a indexação/
+      # busca no vector store falha isoladamente e degrada graciosamente (ver
+      # GeradorQuestaoIAImpl/IndexadorConteudoIAImpl) — a geração de questões via Groq
+      # continua funcionando normalmente, só sem o contexto extra de RAG.
+      embedding:
+        api-key: ${OPENAI_API_KEY:sem-chave-rag-fica-desativado-mas-nao-quebra-a-geracao}
+        options:
+          model: text-embedding-3-small
+
+    # RAG (etapa 10): pgvector reaproveita o mesmo DataSource do Postgres já configurado
+    # para JPA. Requer a extensão "vector" — initialize-schema cria a extensão/tabela
+    # automaticamente na primeira subida se o usuário do banco tiver permissão.
+    vectorstore:
+      pgvector:
+        initialize-schema: true
+        dimensions: 1536
+        index-type: HNSW
+        distance-type: COSINE_DISTANCE
+
+# ATENÇÃO: o valor padrão abaixo é só para dev local nunca funcionar "quebrado" ao clonar
+# o projeto. Em qualquer ambiente real, defina a variável de ambiente JWT_SECRET com um
+# segredo forte e exclusivo daquele ambiente — nunca versione o segredo de produção aqui.
+simulai:
+  # Origem permitida no CORS (ver SecurityConfig.corsConfigurationSource) — em produção
+  # defina FRONTEND_URL com a URL real do frontend (ex.: https://seu-app.vercel.app).
+  frontend-url: ${FRONTEND_URL:http://localhost:5173}
+
+  jwt:
+    secret: ${JWT_SECRET:troque-este-segredo-em-producao-minimo-32-bytes-0123456789}
+    expiracao-minutos: 60
+
+  # Bootstrap do primeiro ADMIN (só age se nenhum ADMIN existir ainda — ver
+  # SimulaI.config.AdminBootstrapRunner). Defina ADMIN_EMAIL/ADMIN_SENHA em produção;
+  # o padrão abaixo é só para não travar o primeiro boot em dev.
+  admin:
+    email: ${ADMIN_EMAIL:admin@simulai.local}
+    senha: ${ADMIN_SENHA:troque-esta-senha-no-primeiro-login}

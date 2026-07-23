@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(& \".\\\\mvnw.cmd\" -q -DskipTests clean compile 2>&1)",
+      "Read(//c/Users/Ian vitor/.claude/projects/c--Users-Ian-vitor-OneDrive-Documentos-SimulaI/memory/**)",
+      "PowerShell(& \".\\\\mvnw.cmd\" -q test 2>&1)",
+      "Bash(find ~/.m2 -iname \"*spring-ai-autoconfigure-model-openai*.jar\" 2>/dev/null | head -5)",
+      "Read(//c/Users/Ian vitor/.m2/**)",
+      "Read(//c/Users/Ian vitor/.m2/repository/org/springframework/ai/spring-ai-autoconfigure-model-openai/1.0.0/**)",
+      "Bash(unzip -p spring-ai-autoconfigure-model-openai-1.0.0.jar META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports)",
+      "Bash(find ~/.m2 -iname \"*springdoc*\" -maxdepth 6 2>/dev/null | head -20)",
+      "Bash(find ~/.m2/repository/org/springdoc -maxdepth 2 -type d 2>/dev/null | sort)",
+      "Read(//c/Users/Ian vitor/.m2/repository/org/springdoc/**)",
+      "Read(//c/Users/Ian vitor/.m2/repository/org/springdoc/springdoc-openapi-starter-webmvc-ui/2.5.0/**)",
+      "Read(//c/Users/Ian vitor/.m2/repository/org/springdoc/springdoc-openapi-starter-webmvc-ui/3.0.2/**)",
+      "Bash(cat ~/.m2/repository/org/springdoc/springdoc-openapi/3.0.2/springdoc-openapi-3.0.2.pom 2>/dev/null | grep -A2 -i \"spring-boot\\\\|swagger\\\\|springdoc.version\" | head -40)",
+      "Read(//c/Users/Ian vitor/.m2/repository/org/springdoc/springdoc-openapi/3.0.2/**)",
+      "Bash(cat ~/.m2/repository/org/springdoc/springdoc-openapi/2.5.0/springdoc-openapi-2.5.0.pom 2>/dev/null | grep -B1 -A2 \"spring-boot-starter-parent\" | head -10)",
+      "Read(//c/Users/Ian vitor/.m2/repository/org/springdoc/springdoc-openapi/2.5.0/**)",
+      "PowerShell(& \".\\\\mvnw.cmd\" -q clean test 2>&1)"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\Ian vitor\\.claude\\projects\\c--Users-Ian-vitor-OneDrive-Documentos-SimulaI\\memory"
+    ]
+  }
+}

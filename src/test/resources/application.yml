@@ -1,0 +1,39 @@
+spring:
+  application:
+    name: SimulaI
+
+  # Auto-suficiente (não depende de application.yaml de main): exclui as auto-configs do
+  # Spring AI/OpenAI que não usamos, e o PgVectorStore (H2 não suporta a extensão
+  # "vector" do Postgres — o contexto de teste usa um VectorStore em memória, ver
+  # SimulaI.config.TestVectorStoreConfig). Chave falsa só para os beans subirem no
+  # contexto de teste — nenhuma chamada real à OpenAI acontece nos testes.
+  autoconfigure:
+    exclude:
+      - org.springframework.ai.model.openai.autoconfigure.OpenAiImageAutoConfiguration
+      - org.springframework.ai.model.openai.autoconfigure.OpenAiAudioSpeechAutoConfiguration
+      - org.springframework.ai.model.openai.autoconfigure.OpenAiAudioTranscriptionAutoConfiguration
+      - org.springframework.ai.model.openai.autoconfigure.OpenAiModerationAutoConfiguration
+      - org.springframework.ai.vectorstore.pgvector.autoconfigure.PgVectorStoreAutoConfiguration
+
+  ai:
+    openai:
+      api-key: sk-chave-falsa-apenas-para-o-contexto-de-teste-subir
+
+  datasource:
+    url: jdbc:h2:mem:simulai-test;DB_CLOSE_DELAY=-1;MODE=PostgreSQL
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+
+simulai:
+  jwt:
+    secret: chave-secreta-fixa-apenas-para-os-testes-automatizados-0000000000
+    expiracao-minutos: 60
