@@ -7,8 +7,14 @@ import { getToken, clearSession } from './auth'
  * precisaríamos configurar CORS no Spring Security. Em produção, VITE_API_URL deve
  * apontar para a URL real da API (ou o frontend ser servido do mesmo domínio).
  */
+/**
+ * timeout generoso (60s): o backend (Render free tier) "dorme" depois de ~15min sem
+ * tráfego e pode demorar até ~1min pra acordar na primeira requisição — sem um timeout
+ * aqui, o axios espera indefinidamente e a UI fica girando sem nenhum feedback.
+ */
 export const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_URL ?? '/api',
+  timeout: 60_000,
 })
 
 apiClient.interceptors.request.use((config) => {
@@ -47,6 +53,9 @@ export function extrairMensagemErro(error: unknown): string {
       return data.erro.mensagem
     }
     return data.mensagem
+  }
+  if (axios.isAxiosError(error) && error.code === 'ECONNABORTED') {
+    return 'O servidor demorou para responder (pode estar iniciando). Aguarde alguns segundos e tente novamente.'
   }
   return 'Erro inesperado. Tente novamente.'
 }
