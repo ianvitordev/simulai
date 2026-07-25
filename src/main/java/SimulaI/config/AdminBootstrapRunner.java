@@ -3,6 +3,7 @@ package SimulaI.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -17,9 +18,14 @@ import SimulaI.repository.UsuarioRepository;
  * (POST /api/usuarios) sempre força role ALUNO, e não existe outro caminho para
  * alcançar os endpoints ADMIN-only (curadoria de catálogo, geração de questões via IA).
  * Roda a cada boot, mas só age se nenhum ADMIN existir ainda — idempotente.
+ *
+ * @Lazy(false): com "spring.main.lazy-initialization: true" ligado globalmente (ver
+ * application.yaml), um ApplicationRunner comum viraria lazy também e nunca seria
+ * instanciado/executado sozinho no boot — precisa forçar eager aqui.
  */
 @Slf4j
 @Component
+@Lazy(false)
 public class AdminBootstrapRunner implements ApplicationRunner {
 
     private final UsuarioRepository usuarioRepository;

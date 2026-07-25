@@ -2,6 +2,14 @@ spring:
   application:
     name: SimulaI
 
+  main:
+    # Adia a criação de beans até o primeiro uso (ex.: clientes de IA, mappers de
+    # Cronograma/Estatística) em vez de construir tudo eagerly no boot — no Render free
+    # tier (CPU bem limitada) isso reduz o tempo até o healthcheck responder. O único
+    # ApplicationRunner do projeto (AdminBootstrapRunner) é forçado a continuar eager
+    # via @Lazy(false), senão nunca rodaria sozinho.
+    lazy-initialization: true
+
   # Credenciais via env var com fallback de dev (mesmo padrão do JWT_SECRET/ADMIN_SENHA) —
   # em produção, defina DB_URL/DB_USERNAME/DB_PASSWORD reais.
   datasource:
