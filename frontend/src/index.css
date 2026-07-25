@@ -2,6 +2,14 @@
 
 @theme {
   --font-sans: system-ui, "Segoe UI", Roboto, sans-serif;
+
+  --color-gold-50: #fdf9ec;
+  --color-gold-100: #faf0cc;
+  --color-gold-200: #f3e0a0;
+  --color-gold-400: #dcae3f;
+  --color-gold-500: #c99a2e;
+  --color-gold-600: #a97f1f;
+  --color-gold-700: #8a6519;
 }
 
 html,

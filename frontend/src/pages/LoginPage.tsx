@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { z } from 'zod'
 import { Alert } from '../components/ui/Alert'
 import { Button } from '../components/ui/Button'
@@ -10,8 +10,8 @@ import { useAuth } from '../hooks/useAuth'
 import { extrairMensagemErro } from '../lib/apiClient'
 
 const schema = z.object({
-  email: z.string().min(1, 'Informe o email').email('Email inválido'),
-  senha: z.string().min(1, 'Informe a senha'),
+  email: z.string().min(1, 'Informe o email').email('Email inválido').max(100, 'Máximo de 100 caracteres'),
+  senha: z.string().min(1, 'Informe a senha').max(50, 'Máximo de 50 caracteres'),
 })
 
 type FormData = z.infer<typeof schema>
@@ -19,8 +19,6 @@ type FormData = z.infer<typeof schema>
 export function LoginPage() {
   const { login } = useAuth()
   const navigate = useNavigate()
-  const location = useLocation()
-  const cadastroSucesso = Boolean((location.state as { cadastroSucesso?: boolean } | null)?.cadastroSucesso)
   const [erro, setErro] = useState<string | null>(null)
 
   const {
@@ -45,18 +43,21 @@ export function LoginPage() {
       <p className="mb-6 text-sm text-slate-500">Acesse sua conta SimulaI</p>
 
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-        {cadastroSucesso && !erro && (
-          <Alert tone="success">Conta criada com sucesso! Faça login para continuar.</Alert>
-        )}
         {erro && <Alert tone="error">{erro}</Alert>}
 
         <FieldWrapper label="Email" htmlFor="email" error={errors.email?.message}>
-          <Input id="email" type="email" autoComplete="email" {...register('email')} />
+          <Input id="email" type="email" autoComplete="email" maxLength={100} {...register('email')} />
         </FieldWrapper>
 
         <FieldWrapper label="Senha" htmlFor="senha" error={errors.senha?.message}>
-          <Input id="senha" type="password" autoComplete="current-password" {...register('senha')} />
+          <Input id="senha" type="password" autoComplete="current-password" maxLength={50} {...register('senha')} />
         </FieldWrapper>
+
+        <p className="text-right text-sm">
+          <Link to="/esqueci-senha" className="font-medium text-gold-600 hover:underline">
+            Esqueci minha senha
+          </Link>
+        </p>
 
         <Button type="submit" isLoading={isSubmitting} className="mt-2 w-full">
           Entrar
@@ -65,7 +66,7 @@ export function LoginPage() {
 
       <p className="mt-6 text-center text-sm text-slate-500">
         Ainda não tem conta?{' '}
-        <Link to="/cadastro" className="font-medium text-indigo-600 hover:underline">
+        <Link to="/cadastro" className="font-medium text-gold-600 hover:underline">
           Cadastre-se
         </Link>
       </p>

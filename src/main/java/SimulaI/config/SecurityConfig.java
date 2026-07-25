@@ -80,6 +80,11 @@ public class SecurityConfig {
         return new JwtAuthenticationFilter(tokenService, usuarioDetailsService);
     }
 
+    @Bean
+    public AuthRateLimitFilter authRateLimitFilter() {
+        return new AuthRateLimitFilter(objectMapper);
+    }
+
     /**
      * Frontend (Vercel) e backend (Render) ficam em domínios diferentes em produção —
      * sem isso o navegador bloqueia toda chamada da SPA. Em dev não faz diferença porque
@@ -134,6 +139,7 @@ public class SecurityConfig {
                         .anyRequest().authenticated())
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(authRateLimitFilter(), UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(this::responderNaoAutenticado)
                         .accessDeniedHandler(this::responderAcessoNegado));

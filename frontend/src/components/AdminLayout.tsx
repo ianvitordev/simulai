@@ -12,7 +12,7 @@ const LINKS = [
 export function AdminLayout() {
   return (
     <div className="flex flex-col gap-6 sm:flex-row">
-      <aside className="shrink-0 sm:w-48">
+      <aside className="shrink-0 rounded-xl bg-slate-950 p-3 sm:w-48">
         <nav className="flex flex-row flex-wrap gap-1 sm:flex-col">
           {LINKS.map((link) => (
             <NavLink
@@ -20,7 +20,7 @@ export function AdminLayout() {
               to={link.to}
               className={({ isActive }) =>
                 `rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
-                  isActive ? 'bg-indigo-100 text-indigo-700' : 'text-slate-600 hover:bg-slate-100'
+                  isActive ? 'bg-gold-600 text-slate-950' : 'text-slate-300 hover:bg-slate-800 hover:text-gold-400'
                 }`
               }
             >

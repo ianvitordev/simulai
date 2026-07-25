@@ -8,11 +8,15 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import SimulaI.entity.Assunto;
 import SimulaI.entity.Disciplina;
 import SimulaI.entity.Questao;
+import SimulaI.entity.Usuario;
 import SimulaI.enums.Dificuldade;
 
 public interface QuestaoRepository extends JpaRepository<Questao, Long>, JpaSpecificationExecutor<Questao> {
 
     List<Questao> findByDisciplina(Disciplina disciplina);
+
+    /** Usada ao remover um usuário — questões que ele gerou são desvinculadas (usuario=null), nunca apagadas. */
+    List<Questao> findByUsuario(Usuario usuario);
 
     List<Questao> findByAssunto(Assunto assunto);
 

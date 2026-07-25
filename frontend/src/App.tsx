@@ -12,7 +12,11 @@ import { DisciplinasPage } from './pages/admin/DisciplinasPage'
 import { QuestoesPage } from './pages/admin/QuestoesPage'
 import { UsuariosPage } from './pages/admin/UsuariosPage'
 import { CadastroPage } from './pages/CadastroPage'
+import { ConfirmarCadastroPage } from './pages/ConfirmarCadastroPage'
+import { CronogramaPage } from './pages/CronogramaPage'
 import { DashboardPage } from './pages/DashboardPage'
+import { EsqueciSenhaPage } from './pages/EsqueciSenhaPage'
+import { EstatisticasPage } from './pages/EstatisticasPage'
 import { FazerSimuladoPage } from './pages/FazerSimuladoPage'
 import { GerarSimuladoPage } from './pages/GerarSimuladoPage'
 import { LoginPage } from './pages/LoginPage'
@@ -44,6 +48,22 @@ export default function App() {
           </PublicOnlyRoute>
         }
       />
+      <Route
+        path="/confirmar-cadastro"
+        element={
+          <PublicOnlyRoute>
+            <ConfirmarCadastroPage />
+          </PublicOnlyRoute>
+        }
+      />
+      <Route
+        path="/esqueci-senha"
+        element={
+          <PublicOnlyRoute>
+            <EsqueciSenhaPage />
+          </PublicOnlyRoute>
+        }
+      />
 
       <Route element={<ProtectedRoute />}>
         <Route element={<Layout />}>
@@ -51,6 +71,8 @@ export default function App() {
           <Route path="/simulados/novo" element={<GerarSimuladoPage />} />
           <Route path="/simulados/:id" element={<FazerSimuladoPage />} />
           <Route path="/simulados/:id/revisao" element={<RevisaoSimuladoPage />} />
+          <Route path="/estatisticas" element={<EstatisticasPage />} />
+          <Route path="/cronograma" element={<CronogramaPage />} />
 
           <Route element={<AdminRoute />}>
             <Route element={<AdminLayout />}>

@@ -16,3 +16,7 @@ export function listarTodos() {
 export function alterarRole(id: number, request: AlterarRoleRequestDTO) {
   return apiClient.patch<UsuarioResponseDTO>(`/usuarios/${id}/role`, request).then((r) => r.data)
 }
+
+export function deletar(id: number) {
+  return apiClient.delete<void>(`/usuarios/${id}`).then((r) => r.data)
+}

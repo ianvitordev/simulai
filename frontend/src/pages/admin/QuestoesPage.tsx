@@ -315,7 +315,7 @@ export function QuestoesPage() {
               <textarea
                 id="enunciado"
                 rows={4}
-                className="rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                className="rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-gold-500 focus:outline-none focus:ring-1 focus:ring-gold-500"
                 {...registerEdit('enunciado')}
               />
             </FieldWrapper>
@@ -328,7 +328,7 @@ export function QuestoesPage() {
               <textarea
                 id="explicacao"
                 rows={3}
-                className="rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                className="rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-gold-500 focus:outline-none focus:ring-1 focus:ring-gold-500"
                 {...registerEdit('explicacao')}
               />
             </FieldWrapper>

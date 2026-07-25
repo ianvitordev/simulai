@@ -7,6 +7,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -20,12 +21,22 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import SimulaI.dto.AlterarRoleRequestDTO;
 import SimulaI.dto.UsuarioRequestDTO;
 import SimulaI.dto.UsuarioResponseDTO;
+import SimulaI.entity.CodigoVerificacao;
+import SimulaI.entity.Cronograma;
+import SimulaI.entity.Questao;
+import SimulaI.entity.Simulado;
 import SimulaI.entity.Usuario;
 import SimulaI.enums.Role;
+import SimulaI.enums.TipoCodigoVerificacao;
 import SimulaI.exception.RecursoNaoEncontradoException;
 import SimulaI.exception.RegistroDuplicadoException;
 import SimulaI.mapper.UsuarioMapper;
+import SimulaI.repository.CodigoVerificacaoRepository;
+import SimulaI.repository.CronogramaRepository;
+import SimulaI.repository.QuestaoRepository;
+import SimulaI.repository.SimuladoRepository;
 import SimulaI.repository.UsuarioRepository;
+import SimulaI.service.CodigoVerificacaoService;
 
 @ExtendWith(MockitoExtension.class)
 class UsuarioServiceImplTest {
@@ -38,6 +49,21 @@ class UsuarioServiceImplTest {
 
     @Mock
     private PasswordEncoder passwordEncoder;
+
+    @Mock
+    private CodigoVerificacaoService codigoVerificacaoService;
+
+    @Mock
+    private SimuladoRepository simuladoRepository;
+
+    @Mock
+    private CronogramaRepository cronogramaRepository;
+
+    @Mock
+    private CodigoVerificacaoRepository codigoVerificacaoRepository;
+
+    @Mock
+    private QuestaoRepository questaoRepository;
 
     @InjectMocks
     private UsuarioServiceImpl usuarioService;
@@ -63,6 +89,8 @@ class UsuarioServiceImplTest {
         assertThat(resultado.getRole()).isEqualTo(Role.ALUNO);
         assertThat(entidade.getSenha()).isEqualTo("hash");
         assertThat(entidade.getRole()).isEqualTo(Role.ALUNO);
+        assertThat(entidade.getEmailVerificado()).isFalse();
+        verify(codigoVerificacaoService).gerarEEnviar(salvo, TipoCodigoVerificacao.CONFIRMACAO_CADASTRO);
     }
 
     @Test
@@ -111,6 +139,40 @@ class UsuarioServiceImplTest {
         verify(usuarioMapper).updateEntityFromDto(captor.capture(), org.mockito.ArgumentMatchers.eq(existente));
         assertThat(captor.getValue().getNome()).isEqualTo("Maria Silva");
         assertThat(existente.getSenha()).isEqualTo("hashNovo");
+    }
+
+    @Test
+    void deveApagarEmCascataESoDesvincularQuestoesGeradas() {
+        Usuario existente = Usuario.builder().id(1L).nome("Maria").email("maria@teste.com").build();
+        Questao questaoGerada = Questao.builder().id(10L).usuario(existente).build();
+        Simulado simulado1 = Simulado.builder().id(20L).usuario(existente).build();
+        Cronograma cronograma = Cronograma.builder().id(30L).usuario(existente).build();
+        CodigoVerificacao codigo = CodigoVerificacao.builder().id(40L).usuario(existente).build();
+
+        when(usuarioRepository.findById(1L)).thenReturn(Optional.of(existente));
+        when(questaoRepository.findByUsuario(existente)).thenReturn(List.of(questaoGerada));
+        when(codigoVerificacaoRepository.findByUsuario(existente)).thenReturn(List.of(codigo));
+        when(cronogramaRepository.findByUsuario(existente)).thenReturn(Optional.of(cronograma));
+        when(simuladoRepository.findByUsuario(existente)).thenReturn(List.of(simulado1));
+
+        usuarioService.deletar(1L);
+
+        assertThat(questaoGerada.getUsuario()).isNull();
+        verify(questaoRepository, never()).delete(any(Questao.class));
+        verify(codigoVerificacaoRepository).deleteAll(List.of(codigo));
+        verify(cronogramaRepository).delete(cronograma);
+        verify(simuladoRepository).deleteAll(List.of(simulado1));
+        verify(usuarioRepository).delete(existente);
+    }
+
+    @Test
+    void deveLancarExcecaoAoRemoverUsuarioInexistente() {
+        when(usuarioRepository.findById(99L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> usuarioService.deletar(99L))
+                .isInstanceOf(RecursoNaoEncontradoException.class);
+
+        verify(usuarioRepository, never()).delete(any());
     }
 
     @Test

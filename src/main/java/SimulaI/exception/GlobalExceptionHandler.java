@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -89,6 +90,18 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * Conta com e-mail ainda não confirmado — o DaoAuthenticationProvider já barra o
+     * login por conta do isEnabled()==false (ver UsuarioDetailsImpl) antes mesmo de
+     * checar a senha. Mais específica que o handler genérico de AuthenticationException
+     * logo abaixo, então tem prioridade automaticamente na resolução do Spring.
+     */
+    @ExceptionHandler(DisabledException.class)
+    public ResponseEntity<ErroResponseDTO> handleContaDesabilitada(DisabledException ex, HttpServletRequest request) {
+        return construirResposta(HttpStatus.UNAUTHORIZED,
+                "Confirme seu e-mail antes de entrar. Verifique sua caixa de entrada.", request);
+    }
+
+    /**
      * Cobre falha de login (email inexistente ou senha errada). Mensagem genérica de
      * propósito: distinguir os dois casos permitiria enumerar emails cadastrados.
      */
@@ -114,6 +127,16 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(GeracaoIAException.class)
     public ResponseEntity<ErroResponseDTO> handleGeracaoIA(GeracaoIAException ex, HttpServletRequest request) {
         log.warn("Falha na geração de questão via IA em {}: {}", request.getRequestURI(), ex.getMessage());
+        return construirResposta(HttpStatus.BAD_GATEWAY, ex.getMessage(), request);
+    }
+
+    /**
+     * 502: mesma linha de raciocínio do GeracaoIAException — falha de uma dependência
+     * externa (o provedor de e-mail), não da nossa API.
+     */
+    @ExceptionHandler(EnvioEmailException.class)
+    public ResponseEntity<ErroResponseDTO> handleEnvioEmail(EnvioEmailException ex, HttpServletRequest request) {
+        log.warn("Falha ao enviar e-mail em {}: {}", request.getRequestURI(), ex.getMessage());
         return construirResposta(HttpStatus.BAD_GATEWAY, ex.getMessage(), request);
     }
 

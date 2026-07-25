@@ -48,6 +48,7 @@ public class AdminBootstrapRunner implements ApplicationRunner {
                 .email(adminEmail)
                 .senha(passwordEncoder.encode(adminSenha))
                 .role(Role.ADMIN)
+                .emailVerificado(true)
                 .build();
 
         usuarioRepository.save(admin);

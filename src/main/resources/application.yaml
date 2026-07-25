@@ -82,3 +82,16 @@ simulai:
   admin:
     email: ${ADMIN_EMAIL:admin@simulai.local}
     senha: ${ADMIN_SENHA:troque-esta-senha-no-primeiro-login}
+
+  # Envio de código por e-mail (confirmação de cadastro/redefinição de senha): EmailJS
+  # (API REST, gratuito — 200 e-mails/mês sem cartão). O remetente/"from" é definido pelo
+  # próprio serviço de e-mail conectado no EmailJS (ex.: Gmail via OAuth), não por config
+  # aqui. Sem as chaves reais, a app sobe normal mas o envio falha com 502
+  # (EnvioEmailException) até configurar — mesmo comportamento já aceito pro GROQ_API_KEY.
+  # Requer habilitar "Allow EmailJS API for non-browser applications" em
+  # Account > Security no dashboard do EmailJS (senão a Private Key é rejeitada).
+  emailjs:
+    service-id: ${EMAILJS_SERVICE_ID:configure-o-service-id-do-emailjs}
+    template-id: ${EMAILJS_TEMPLATE_ID:configure-o-template-id-do-emailjs}
+    public-key: ${EMAILJS_PUBLIC_KEY:configure-a-public-key-do-emailjs}
+    private-key: ${EMAILJS_PRIVATE_KEY:configure-a-private-key-do-emailjs}

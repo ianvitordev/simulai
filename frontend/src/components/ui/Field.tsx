@@ -21,7 +21,7 @@ export function FieldWrapper({ label, htmlFor, error, children }: FieldWrapperPr
 
 const inputClasses =
   'rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 shadow-sm ' +
-  'focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 ' +
+  'focus:border-gold-500 focus:outline-none focus:ring-1 focus:ring-gold-500 ' +
   'disabled:cursor-not-allowed disabled:bg-slate-50'
 
 export const Input = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInputElement>>(

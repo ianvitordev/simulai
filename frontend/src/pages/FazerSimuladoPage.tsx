@@ -180,7 +180,7 @@ function ProvaEmAndamento({
               <label
                 key={alternativa.id}
                 className={`flex cursor-pointer items-start gap-3 rounded-lg border px-4 py-3 text-sm transition-colors
-                  ${selecionada ? 'border-indigo-500 bg-indigo-50' : 'border-slate-200 hover:bg-slate-50'}
+                  ${selecionada ? 'border-gold-500 bg-gold-50' : 'border-slate-200 hover:bg-slate-50'}
                   ${responderMutation.isPending ? 'pointer-events-none opacity-60' : ''}`}
               >
                 <input
@@ -228,7 +228,7 @@ function ProvaEmAndamento({
               key={questao.id}
               onClick={() => irParaQuestao(indice)}
               className={`h-8 w-8 rounded-full text-xs font-medium transition-colors
-                ${indice === indiceAtual ? 'bg-indigo-600 text-white' : ''}
+                ${indice === indiceAtual ? 'bg-gold-600 text-slate-950' : ''}
                 ${indice !== indiceAtual && respostas[questao.id] ? 'bg-green-100 text-green-700' : ''}
                 ${indice !== indiceAtual && !respostas[questao.id] ? 'bg-slate-100 text-slate-500 hover:bg-slate-200' : ''}`}
             >

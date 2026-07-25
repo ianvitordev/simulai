@@ -23,6 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import SimulaI.dto.LoginRequestDTO;
 import SimulaI.entity.Usuario;
 import SimulaI.enums.Role;
+import SimulaI.service.AuthService;
 import SimulaI.service.TokenService;
 import SimulaI.service.UsuarioDetailsImpl;
 
@@ -46,6 +47,9 @@ class AuthControllerTest {
 
     @MockitoBean
     private TokenService tokenService;
+
+    @MockitoBean
+    private AuthService authService;
 
     @Test
     void deveAutenticarERetornarToken() throws Exception {

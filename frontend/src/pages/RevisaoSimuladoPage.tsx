@@ -42,7 +42,7 @@ export function RevisaoSimuladoPage() {
         <Resumo label="Acertos" valor={resumo.acertos} tone="text-green-600" />
         <Resumo label="Erros" valor={resumo.erros} tone="text-red-600" />
         <Resumo label="Não respondidas" valor={resumo.naoRespondidas} tone="text-slate-500" />
-        <Resumo label="Aproveitamento" valor={`${resumo.percentual.toFixed(0)}%`} tone="text-indigo-600" />
+        <Resumo label="Aproveitamento" valor={`${resumo.percentual.toFixed(0)}%`} tone="text-gold-600" />
       </Card>
 
       <div className="flex flex-col gap-4">

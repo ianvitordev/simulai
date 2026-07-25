@@ -1,4 +1,4 @@
-import type { Dificuldade, StatusConcurso, StatusSimulado, TipoQuestao } from '../types/api'
+import type { Dificuldade, DiaSemana, StatusConcurso, StatusSimulado, TipoQuestao } from '../types/api'
 
 export function formatarData(iso: string | null): string {
   if (!iso) return '—'
@@ -88,3 +88,39 @@ export function rotuloTipoQuestao(tipo: TipoQuestao): string {
 }
 
 export const TIPO_QUESTAO_OPCOES: TipoQuestao[] = ['MULTIPLA_ESCOLHA', 'CERTO_ERRADO', 'DISCURSIVA']
+
+export function formatarDuracaoSegundos(segundos: number): string {
+  const horas = Math.floor(segundos / 3600)
+  const minutos = Math.floor((segundos % 3600) / 60)
+  if (horas === 0) return `${minutos}min`
+  return horas + 'h' + (minutos > 0 ? ` ${minutos}min` : '')
+}
+
+export function rotuloDiaSemana(dia: DiaSemana): string {
+  switch (dia) {
+    case 'SEGUNDA':
+      return 'Segunda-feira'
+    case 'TERCA':
+      return 'Terça-feira'
+    case 'QUARTA':
+      return 'Quarta-feira'
+    case 'QUINTA':
+      return 'Quinta-feira'
+    case 'SEXTA':
+      return 'Sexta-feira'
+    case 'SABADO':
+      return 'Sábado'
+    case 'DOMINGO':
+      return 'Domingo'
+  }
+}
+
+export const DIA_SEMANA_ORDEM: DiaSemana[] = [
+  'SEGUNDA',
+  'TERCA',
+  'QUARTA',
+  'QUINTA',
+  'SEXTA',
+  'SABADO',
+  'DOMINGO',
+]

@@ -26,3 +26,11 @@ export function useAlterarRole() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['usuarios'] }),
   })
 }
+
+export function useDeletarUsuario() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (id: number) => usuariosApi.deletar(id),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['usuarios'] }),
+  })
+}

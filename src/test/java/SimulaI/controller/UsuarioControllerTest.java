@@ -47,7 +47,8 @@ class UsuarioControllerTest {
 
     @Test
     void deveCadastrarUsuarioERetornar201() throws Exception {
-        UsuarioRequestDTO request = UsuarioRequestDTO.builder().nome("Maria").email("maria@teste.com").senha("123456").build();
+        UsuarioRequestDTO request = UsuarioRequestDTO.builder().nome("Maria").email("maria@teste.com")
+                .senha("123456").telefone("11999999999").build();
         UsuarioResponseDTO response = UsuarioResponseDTO.builder().id(1L).nome("Maria").email("maria@teste.com").role(Role.ALUNO).build();
 
         when(usuarioService.cadastrar(any(UsuarioRequestDTO.class))).thenReturn(response);
@@ -82,7 +83,8 @@ class UsuarioControllerTest {
 
     @Test
     void deveRetornar409QuandoEmailDuplicado() throws Exception {
-        UsuarioRequestDTO request = UsuarioRequestDTO.builder().nome("Maria").email("maria@teste.com").senha("123456").build();
+        UsuarioRequestDTO request = UsuarioRequestDTO.builder().nome("Maria").email("maria@teste.com")
+                .senha("123456").telefone("11999999999").build();
         when(usuarioService.cadastrar(any(UsuarioRequestDTO.class)))
                 .thenThrow(new RegistroDuplicadoException("Já existe um usuário cadastrado com o email: maria@teste.com"));
 

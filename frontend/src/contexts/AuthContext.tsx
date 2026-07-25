@@ -7,6 +7,7 @@ interface AuthContextValue {
   claims: JwtClaims | null
   isAuthenticated: boolean
   login: (request: LoginRequestDTO) => Promise<void>
+  autenticarComToken: (token: string) => void
   logout: () => void
 }
 
@@ -34,14 +35,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setClaims(decodeToken(response.accessToken))
   }, [])
 
+  const autenticarComToken = useCallback((token: string) => {
+    setToken(token)
+    setClaims(decodeToken(token))
+  }, [])
+
   const logout = useCallback(() => {
     clearSession()
     setClaims(null)
   }, [])
 
   const value = useMemo<AuthContextValue>(
-    () => ({ claims, isAuthenticated: claims !== null, login, logout }),
-    [claims, login, logout],
+    () => ({ claims, isAuthenticated: claims !== null, login, autenticarComToken, logout }),
+    [claims, login, autenticarComToken, logout],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

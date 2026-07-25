@@ -3,7 +3,7 @@ import { Button } from '../../components/ui/Button'
 import { Card } from '../../components/ui/Card'
 import { Spinner } from '../../components/ui/Spinner'
 import { useAuth } from '../../hooks/useAuth'
-import { useAlterarRole, useUsuarios } from '../../hooks/useUsuario'
+import { useAlterarRole, useDeletarUsuario, useUsuarios } from '../../hooks/useUsuario'
 import { extrairMensagemErro } from '../../lib/apiClient'
 import type { Role, UsuarioResponseDTO } from '../../types/api'
 
@@ -11,11 +11,21 @@ export function UsuariosPage() {
   const { claims } = useAuth()
   const { data: usuarios, isLoading } = useUsuarios()
   const alterarRoleMutation = useAlterarRole()
+  const deletarMutation = useDeletarUsuario()
 
   async function handleAlterarRole(usuario: UsuarioResponseDTO, novaRole: Role) {
     if (!confirm(`Alterar a role de "${usuario.nome}" para ${novaRole}?`)) return
     try {
       await alterarRoleMutation.mutateAsync({ id: usuario.id, request: { role: novaRole } })
+    } catch (error) {
+      alert(extrairMensagemErro(error))
+    }
+  }
+
+  async function handleRemover(usuario: UsuarioResponseDTO) {
+    if (!confirm(`Remover o usuário "${usuario.nome}"? Essa ação não pode ser desfeita.`)) return
+    try {
+      await deletarMutation.mutateAsync(usuario.id)
     } catch (error) {
       alert(extrairMensagemErro(error))
     }
@@ -63,6 +73,15 @@ export function UsuariosPage() {
                       Rebaixar a ALUNO
                     </Button>
                   )}
+                  <Button
+                    variant="danger"
+                    isLoading={deletarMutation.isPending}
+                    disabled={ehVocêMesmo}
+                    title={ehVocêMesmo ? 'Você não pode remover sua própria conta' : undefined}
+                    onClick={() => handleRemover(usuario)}
+                  >
+                    Remover
+                  </Button>
                 </div>
               </Card>
             )

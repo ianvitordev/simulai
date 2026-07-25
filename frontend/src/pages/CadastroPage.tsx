@@ -10,9 +10,10 @@ import { FieldWrapper, Input } from '../components/ui/Field'
 import { extrairMensagemErro } from '../lib/apiClient'
 
 const schema = z.object({
-  nome: z.string().min(1, 'Informe seu nome'),
-  email: z.string().min(1, 'Informe o email').email('Email inválido'),
-  senha: z.string().min(6, 'A senha precisa ter pelo menos 6 caracteres'),
+  nome: z.string().min(1, 'Informe seu nome').max(30, 'Máximo de 30 caracteres'),
+  email: z.string().min(1, 'Informe o email').email('Email inválido').max(100, 'Máximo de 100 caracteres'),
+  senha: z.string().min(6, 'A senha precisa ter pelo menos 6 caracteres').max(50, 'Máximo de 50 caracteres'),
+  telefone: z.string().min(1, 'Informe seu telefone').max(20, 'Máximo de 20 caracteres'),
 })
 
 type FormData = z.infer<typeof schema>
@@ -31,7 +32,7 @@ export function CadastroPage() {
     setErro(null)
     try {
       await usuariosApi.cadastrar(data)
-      navigate('/login', { replace: true, state: { cadastroSucesso: true } })
+      navigate('/confirmar-cadastro', { replace: true, state: { email: data.email } })
     } catch (error) {
       setErro(extrairMensagemErro(error))
     }
@@ -46,15 +47,20 @@ export function CadastroPage() {
         {erro && <Alert tone="error">{erro}</Alert>}
 
         <FieldWrapper label="Nome" htmlFor="nome" error={errors.nome?.message}>
-          <Input id="nome" autoComplete="name" {...register('nome')} />
+          <Input id="nome" autoComplete="name" maxLength={30} {...register('nome')} />
         </FieldWrapper>
 
         <FieldWrapper label="Email" htmlFor="email" error={errors.email?.message}>
-          <Input id="email" type="email" autoComplete="email" {...register('email')} />
+          <Input id="email" type="email" autoComplete="email" maxLength={100} {...register('email')} />
         </FieldWrapper>
 
         <FieldWrapper label="Senha" htmlFor="senha" error={errors.senha?.message}>
-          <Input id="senha" type="password" autoComplete="new-password" {...register('senha')} />
+          <Input id="senha" type="password" autoComplete="new-password" maxLength={50} {...register('senha')} />
+        </FieldWrapper>
+
+        <FieldWrapper label="Telefone" htmlFor="telefone" error={errors.telefone?.message}>
+          <Input id="telefone" type="tel" autoComplete="tel" maxLength={20} placeholder="(11) 99999-9999"
+            {...register('telefone')} />
         </FieldWrapper>
 
         <Button type="submit" isLoading={isSubmitting} className="mt-2 w-full">
@@ -64,7 +70,7 @@ export function CadastroPage() {
 
       <p className="mt-6 text-center text-sm text-slate-500">
         Já tem conta?{' '}
-        <Link to="/login" className="font-medium text-indigo-600 hover:underline">
+        <Link to="/login" className="font-medium text-gold-600 hover:underline">
           Entrar
         </Link>
       </p>

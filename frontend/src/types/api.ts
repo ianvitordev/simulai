@@ -19,6 +19,10 @@ export type StatusConcurso =
 
 export type StatusSimulado = 'CRIADO' | 'EM_ANDAMENTO' | 'FINALIZADO' | 'CANCELADO'
 
+export type DiaSemana = 'SEGUNDA' | 'TERCA' | 'QUARTA' | 'QUINTA' | 'SEXTA' | 'SABADO' | 'DOMINGO'
+
+export type TipoCodigoVerificacao = 'CONFIRMACAO_CADASTRO' | 'REDEFINICAO_SENHA'
+
 // ---------- Auth ----------
 
 export interface LoginRequestDTO {
@@ -32,18 +36,41 @@ export interface TokenResponseDTO {
   expiraEmSegundos: number
 }
 
+export interface ConfirmarCadastroRequestDTO {
+  email: string
+  codigo: string
+}
+
+export interface EsqueciSenhaRequestDTO {
+  email: string
+}
+
+export interface RedefinirSenhaRequestDTO {
+  email: string
+  codigo: string
+  novaSenha: string
+}
+
+export interface ReenviarCodigoRequestDTO {
+  email: string
+  tipo: TipoCodigoVerificacao
+}
+
 // ---------- Usuario ----------
 
 export interface UsuarioRequestDTO {
   nome: string
   email: string
   senha: string
+  telefone: string
 }
 
 export interface UsuarioResponseDTO {
   id: number
   nome: string
   email: string
+  telefone: string | null
+  emailVerificado: boolean
   role: Role
 }
 
@@ -248,6 +275,65 @@ export interface RevisaoQuestaoDTO {
 export interface SimuladoRevisaoDTO {
   simuladoId: number
   questoes: RevisaoQuestaoDTO[]
+}
+
+// ---------- Estatísticas ----------
+
+export interface EstatisticaAssuntoDTO {
+  assunto: string
+  totalRespondidas: number
+  acertos: number
+  percentual: number
+}
+
+export interface EstatisticaDisciplinaDTO {
+  disciplina: string
+  totalRespondidas: number
+  acertos: number
+  percentual: number
+  porAssunto: EstatisticaAssuntoDTO[]
+}
+
+export interface EstatisticaEvolucaoDTO {
+  simuladoId: number
+  data: string
+  percentual: number
+}
+
+export interface EstatisticaResponseDTO {
+  totalRespondidas: number
+  totalAcertos: number
+  percentualGeral: number
+  totalSimuladosFinalizados: number
+  tempoTotalSegundos: number
+  porDisciplina: EstatisticaDisciplinaDTO[]
+  evolucao: EstatisticaEvolucaoDTO[]
+}
+
+// ---------- Cronograma ----------
+
+export interface GerarCronogramaRequestDTO {
+  diasPorSemana: number
+  horasPorDia: number
+}
+
+export interface ItemCronogramaResponseDTO {
+  id: number
+  diaSemana: DiaSemana
+  disciplina: string
+  assunto: string
+  duracaoMinutos: number
+  foco: string
+  justificativa: string | null
+}
+
+export interface CronogramaResponseDTO {
+  id: number
+  geradoEm: string
+  diasPorSemana: number
+  horasPorDia: number
+  observacaoGeral: string | null
+  itens: ItemCronogramaResponseDTO[]
 }
 
 // ---------- Erros ----------

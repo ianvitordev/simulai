@@ -16,6 +16,10 @@ public class UsuarioResponseDTO {
 
     private String email;
 
+    private String telefone;
+
+    private Boolean emailVerificado;
+
     private Role role;
 
 }

@@ -36,9 +36,21 @@ public class Usuario {
 
     @Column(nullable = false)
     private String senha;
-    
+
+    /**
+     * Obrigatório só na entrada (UsuarioRequestDTO) do cadastro público — a coluna fica
+     * nullable pra não quebrar dados antigos/criação direta de entidade (bootstrap do
+     * admin, testes).
+     */
+    @Column
+    private String telefone;
+
+    @Builder.Default
+    @Column(nullable = false)
+    private Boolean emailVerificado = false;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
-    
+
 }

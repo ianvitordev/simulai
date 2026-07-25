@@ -59,8 +59,13 @@ public class UsuarioDetailsImpl implements UserDetails {
         return true;
     }
 
+    /**
+     * Contas com e-mail ainda não confirmado não podem logar — o
+     * DaoAuthenticationProvider já checa isEnabled() antes da senha e lança
+     * DisabledException (tratada no GlobalExceptionHandler com mensagem específica).
+     */
     @Override
     public boolean isEnabled() {
-        return true;
+        return Boolean.TRUE.equals(usuario.getEmailVerificado());
     }
 }
