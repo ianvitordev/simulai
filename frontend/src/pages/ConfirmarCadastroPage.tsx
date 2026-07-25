@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form'
 import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { z } from 'zod'
 import * as authApi from '../api/auth'
+import { AuthLayout } from '../components/AuthLayout'
 import { Alert } from '../components/ui/Alert'
 import { Button } from '../components/ui/Button'
 import { FieldWrapper, Input } from '../components/ui/Field'
@@ -61,7 +62,7 @@ export function ConfirmarCadastroPage() {
   }
 
   return (
-    <div className="mx-auto flex min-h-screen max-w-sm flex-col justify-center px-4">
+    <AuthLayout>
       <h1 className="mb-1 text-2xl font-semibold text-slate-900">Confirme seu cadastro</h1>
       <p className="mb-6 text-sm text-slate-500">
         Enviamos um código de 6 dígitos para <strong>{email}</strong>. Digite abaixo para ativar sua conta.
@@ -82,6 +83,6 @@ export function ConfirmarCadastroPage() {
           Reenviar código
         </Button>
       </form>
-    </div>
+    </AuthLayout>
   )
 }

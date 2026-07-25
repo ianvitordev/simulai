@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
 import { z } from 'zod'
 import * as authApi from '../api/auth'
+import { AuthLayout } from '../components/AuthLayout'
 import { Alert } from '../components/ui/Alert'
 import { Button } from '../components/ui/Button'
 import { FieldWrapper, Input } from '../components/ui/Field'
@@ -53,7 +54,7 @@ export function EsqueciSenhaPage() {
   }
 
   return (
-    <div className="mx-auto flex min-h-screen max-w-sm flex-col justify-center px-4">
+    <AuthLayout>
       <h1 className="mb-1 text-2xl font-semibold text-slate-900">Esqueci minha senha</h1>
 
       {!email ? (
@@ -104,6 +105,6 @@ export function EsqueciSenhaPage() {
           Voltar para o login
         </Link>
       </p>
-    </div>
+    </AuthLayout>
   )
 }
