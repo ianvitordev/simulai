@@ -1,0 +1,15 @@
+name: Keep backend alive
+
+on:
+  schedule:
+    # A cada 10 minutos - o Render free tier dorme depois de ~15min sem trafego, entao
+    # isso mantem o backend sempre acordado (evita o cold start de varios minutos).
+    - cron: '*/10 * * * *'
+  workflow_dispatch: {}
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping health check
+        run: curl -sf --max-time 120 https://simulai-api.onrender.com/actuator/health
