@@ -6,8 +6,7 @@ import { getToken, clearSession } from './auth'
  * Em dev, o Vite faz proxy de /api para o backend (vite.config.ts) — sem isso
  * precisaríamos configurar CORS no Spring Security. Em produção, VITE_API_URL deve
  * apontar para a URL real da API (ou o frontend ser servido do mesmo domínio).
- */
-/**
+ *
  * timeout generoso (60s): o backend (Render free tier) "dorme" depois de ~15min sem
  * tráfego e pode demorar até ~1min pra acordar na primeira requisição — sem um timeout
  * aqui, o axios espera indefinidamente e a UI fica girando sem nenhum feedback.
@@ -16,6 +15,20 @@ export const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_URL ?? '/api',
   timeout: 60_000,
 })
+
+/**
+ * Dispara uma chamada silenciosa pro health check assim que o app carrega, pra começar
+ * a acordar o backend (Render free tier) em paralelo enquanto a pessoa ainda está
+ * preenchendo o formulário de login/cadastro — reduz a espera percebida na hora de
+ * enviar de verdade. Não faz sentido em dev (backend local nunca dorme) nem sem
+ * VITE_API_URL configurada (endpoint de health não é proxied pelo Vite).
+ */
+export function acordarBackend() {
+  const apiUrl = import.meta.env.VITE_API_URL
+  if (!apiUrl) return
+  const origem = apiUrl.replace(/\/api\/?$/, '')
+  fetch(`${origem}/actuator/health`).catch(() => {})
+}
 
 apiClient.interceptors.request.use((config) => {
   const token = getToken()

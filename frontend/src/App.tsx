@@ -1,9 +1,11 @@
+import { useEffect } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { AdminLayout } from './components/AdminLayout'
 import { AdminRoute } from './components/AdminRoute'
 import { Layout } from './components/Layout'
 import { ProtectedRoute } from './components/ProtectedRoute'
 import { useAuth } from './hooks/useAuth'
+import { acordarBackend } from './lib/apiClient'
 import { AssuntosPage } from './pages/admin/AssuntosPage'
 import { BancasPage } from './pages/admin/BancasPage'
 import { ConcursoDetalhePage } from './pages/admin/ConcursoDetalhePage'
@@ -30,6 +32,10 @@ function PublicOnlyRoute({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
+  useEffect(() => {
+    acordarBackend()
+  }, [])
+
   return (
     <Routes>
       <Route
