@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import SimulaI.dto.GerarProvaRequestDTO;
 import SimulaI.dto.GerarSimuladoRequestDTO;
 import SimulaI.dto.RespostaUsuarioRequestDTO;
 import SimulaI.dto.RespostaUsuarioResponseDTO;
@@ -90,6 +91,32 @@ public class SimuladoServiceImpl implements SimuladoService {
                 .tempoLimiteMinutos(request.getTempoLimiteMinutos() != null ? request.getTempoLimiteMinutos() : 0)
                 .status(StatusSimulado.CRIADO)
                 .questoes(selecionadas)
+                .respostas(new ArrayList<>())
+                .build();
+
+        Simulado simuladoSalvo = simuladoRepository.save(simulado);
+        return simuladoMapper.toResponse(simuladoSalvo);
+    }
+
+    @Override
+    public SimuladoResponseDTO gerarProva(Long usuarioId, GerarProvaRequestDTO request) {
+        Usuario usuario = buscarUsuario(usuarioId);
+        Concurso concurso = buscarConcurso(request.getConcursoId());
+
+        List<Questao> questoesDaProva =
+                questaoRepository.findByConcursoAndGeradaPorIAFalseAndAtivaTrueOrderById(concurso);
+
+        if (questoesDaProva.isEmpty()) {
+            throw new RegraNegocioException("Este concurso não possui uma prova real cadastrada.");
+        }
+
+        Simulado simulado = Simulado.builder()
+                .usuario(usuario)
+                .concurso(concurso)
+                .quantidadeQuestoes(questoesDaProva.size())
+                .tempoLimiteMinutos(0)
+                .status(StatusSimulado.CRIADO)
+                .questoes(new ArrayList<>(questoesDaProva))
                 .respostas(new ArrayList<>())
                 .build();
 

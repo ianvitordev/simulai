@@ -128,4 +128,17 @@ class ConcursoServiceImplTest {
         assertThatThrownBy(() -> concursoService.removerDisciplina(1L, 2L))
                 .isInstanceOf(RegraNegocioException.class);
     }
+
+    @Test
+    void deveListarApenasConcursosComQuestoesReais() {
+        Concurso concurso = Concurso.builder().id(7L).nome("PM-PE 2024 (Prova Aplicada)").build();
+        ConcursoResponseDTO response = ConcursoResponseDTO.builder().id(7L).nome("PM-PE 2024 (Prova Aplicada)").build();
+
+        when(concursoRepository.findComQuestoesReais()).thenReturn(List.of(concurso));
+        when(concursoMapper.toResponseList(List.of(concurso))).thenReturn(List.of(response));
+
+        List<ConcursoResponseDTO> resultado = concursoService.listarProvasDisponiveis();
+
+        assertThat(resultado).containsExactly(response);
+    }
 }

@@ -219,6 +219,10 @@ export interface GerarSimuladoRequestDTO {
   tempoLimiteMinutos?: number
 }
 
+export interface GerarProvaRequestDTO {
+  concursoId: number
+}
+
 export interface SimuladoResponseDTO {
   id: number
   dataCriacao: string

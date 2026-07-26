@@ -68,6 +68,12 @@ public class ConcursoServiceImpl implements ConcursoService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<ConcursoResponseDTO> listarProvasDisponiveis() {
+        return concursoMapper.toResponseList(concursoRepository.findComQuestoesReais());
+    }
+
+    @Override
     public ConcursoResponseDTO atualizar(Long id, ConcursoRequestDTO request) {
         Concurso concurso = buscarEntidadePorId(id);
         Banca banca = buscarBanca(request.getBancaId());

@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import * as simuladosApi from '../api/simulados'
 import { useAuth } from './useAuth'
-import type { GerarSimuladoRequestDTO, RespostaUsuarioRequestDTO } from '../types/api'
+import type { GerarProvaRequestDTO, GerarSimuladoRequestDTO, RespostaUsuarioRequestDTO } from '../types/api'
 
 export function useMeusSimulados() {
   const { claims } = useAuth()
@@ -34,6 +34,17 @@ export function useGerarSimulado() {
 
   return useMutation({
     mutationFn: (request: GerarSimuladoRequestDTO) => simuladosApi.gerar(request),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['simulados', 'usuario'] })
+    },
+  })
+}
+
+export function useGerarProva() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (request: GerarProvaRequestDTO) => simuladosApi.gerarProva(request),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['simulados', 'usuario'] })
     },

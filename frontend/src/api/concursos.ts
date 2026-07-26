@@ -5,6 +5,10 @@ export function listarTodos() {
   return apiClient.get<ConcursoResponseDTO[]>('/concursos').then((r) => r.data)
 }
 
+export function listarProvasDisponiveis() {
+  return apiClient.get<ConcursoResponseDTO[]>('/concursos/provas').then((r) => r.data)
+}
+
 export function cadastrar(request: ConcursoRequestDTO) {
   return apiClient.post<ConcursoResponseDTO>('/concursos', request).then((r) => r.data)
 }

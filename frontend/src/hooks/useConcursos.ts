@@ -9,6 +9,13 @@ export function useConcursos() {
   })
 }
 
+export function useProvasDisponiveis() {
+  return useQuery({
+    queryKey: ['concursos', 'provas'],
+    queryFn: concursosApi.listarProvasDisponiveis,
+  })
+}
+
 function useInvalidarConcursos() {
   const queryClient = useQueryClient()
   return () => queryClient.invalidateQueries({ queryKey: ['concursos'] })

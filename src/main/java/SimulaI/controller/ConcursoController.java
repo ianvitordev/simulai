@@ -53,6 +53,12 @@ public class ConcursoController {
         return ResponseEntity.ok(concursoService.listarTodos());
     }
 
+    @Operation(summary = "Listar concursos com provas reais aplicadas disponíveis")
+    @GetMapping("/provas")
+    public ResponseEntity<List<ConcursoResponseDTO>> listarProvasDisponiveis() {
+        return ResponseEntity.ok(concursoService.listarProvasDisponiveis());
+    }
+
     @Operation(summary = "Atualizar os dados de um concurso")
     @PutMapping("/{id}")
     public ResponseEntity<ConcursoResponseDTO> atualizar(@PathVariable Long id,

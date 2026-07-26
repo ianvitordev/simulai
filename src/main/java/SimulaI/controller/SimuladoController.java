@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+import SimulaI.dto.GerarProvaRequestDTO;
 import SimulaI.dto.GerarSimuladoRequestDTO;
 import SimulaI.dto.RespostaUsuarioRequestDTO;
 import SimulaI.dto.RespostaUsuarioResponseDTO;
@@ -50,6 +51,14 @@ public class SimuladoController {
     public ResponseEntity<SimuladoResponseDTO> gerar(@AuthenticationPrincipal UsuarioDetailsImpl principal,
                                                        @Valid @RequestBody GerarSimuladoRequestDTO request) {
         SimuladoResponseDTO response = simuladoService.gerar(principal.getUsuarioId(), request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @Operation(summary = "Gerar uma prova real aplicada (todas as questões originais, na ordem original)")
+    @PostMapping("/gerar-prova")
+    public ResponseEntity<SimuladoResponseDTO> gerarProva(@AuthenticationPrincipal UsuarioDetailsImpl principal,
+                                                            @Valid @RequestBody GerarProvaRequestDTO request) {
+        SimuladoResponseDTO response = simuladoService.gerarProva(principal.getUsuarioId(), request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 

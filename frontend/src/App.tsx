@@ -23,6 +23,7 @@ import { FazerSimuladoPage } from './pages/FazerSimuladoPage'
 import { GerarSimuladoPage } from './pages/GerarSimuladoPage'
 import { LoginPage } from './pages/LoginPage'
 import { NotFoundPage } from './pages/NotFoundPage'
+import { ProvasPage } from './pages/ProvasPage'
 import { RevisaoSimuladoPage } from './pages/RevisaoSimuladoPage'
 
 function PublicOnlyRoute({ children }: { children: React.ReactNode }) {
@@ -75,6 +76,7 @@ export default function App() {
         <Route element={<Layout />}>
           <Route path="/" element={<DashboardPage />} />
           <Route path="/simulados/novo" element={<GerarSimuladoPage />} />
+          <Route path="/provas" element={<ProvasPage />} />
           <Route path="/simulados/:id" element={<FazerSimuladoPage />} />
           <Route path="/simulados/:id/revisao" element={<RevisaoSimuladoPage />} />
           <Route path="/estatisticas" element={<EstatisticasPage />} />

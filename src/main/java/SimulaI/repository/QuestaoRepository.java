@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import SimulaI.entity.Assunto;
+import SimulaI.entity.Concurso;
 import SimulaI.entity.Disciplina;
 import SimulaI.entity.Questao;
 import SimulaI.entity.Usuario;
@@ -14,6 +15,15 @@ import SimulaI.enums.Dificuldade;
 public interface QuestaoRepository extends JpaRepository<Questao, Long>, JpaSpecificationExecutor<Questao> {
 
     List<Questao> findByDisciplina(Disciplina disciplina);
+
+    /**
+     * Usada pelas "Provas" (prova real aplicada, ao contrário do sorteio aleatório dos
+     * Simulados): traz TODAS as questões reais (não geradas por IA) do concurso, na
+     * ordem original de cadastro (mesma ordem da prova de verdade).
+     */
+    List<Questao> findByConcursoAndGeradaPorIAFalseAndAtivaTrueOrderById(Concurso concurso);
+
+    boolean existsByConcursoAndGeradaPorIAFalse(Concurso concurso);
 
     /** Usada ao remover um usuário — questões que ele gerou são desvinculadas (usuario=null), nunca apagadas. */
     List<Questao> findByUsuario(Usuario usuario);

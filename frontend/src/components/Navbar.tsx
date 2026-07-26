@@ -7,6 +7,7 @@ import { Button } from './ui/Button'
 const LINKS = [
   { to: '/', label: 'Meus simulados' },
   { to: '/simulados/novo', label: 'Gerar simulado' },
+  { to: '/provas', label: 'Provas' },
   { to: '/estatisticas', label: 'Estatísticas' },
   { to: '/cronograma', label: 'Cronograma' },
 ]

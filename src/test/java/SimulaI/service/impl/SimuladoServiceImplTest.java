@@ -18,6 +18,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import SimulaI.dto.GerarProvaRequestDTO;
 import SimulaI.dto.GerarSimuladoRequestDTO;
 import SimulaI.dto.RespostaUsuarioRequestDTO;
 import SimulaI.dto.RespostaUsuarioResponseDTO;
@@ -195,6 +196,52 @@ class SimuladoServiceImplTest {
         ArgumentCaptor<Simulado> captor = ArgumentCaptor.forClass(Simulado.class);
         verify(simuladoRepository).save(captor.capture());
         assertThat(captor.getValue().getQuestoes()).containsExactly(valida);
+    }
+
+    // ---------- gerarProva ----------
+
+    @Test
+    void deveGerarProvaComTodasAsQuestoesReaisNaOrdemOriginal() {
+        Usuario usuario = Usuario.builder().id(1L).build();
+        Concurso concurso = Concurso.builder().id(7L).build();
+        List<Questao> questoesReais = new ArrayList<>(List.of(questaoValida(10L), questaoValida(11L), questaoValida(12L)));
+
+        GerarProvaRequestDTO request = GerarProvaRequestDTO.builder().concursoId(7L).build();
+
+        when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuario));
+        when(concursoRepository.findById(7L)).thenReturn(Optional.of(concurso));
+        when(questaoRepository.findByConcursoAndGeradaPorIAFalseAndAtivaTrueOrderById(concurso))
+                .thenReturn(questoesReais);
+        when(simuladoRepository.save(any(Simulado.class))).thenAnswer(inv -> inv.getArgument(0));
+        when(simuladoMapper.toResponse(any(Simulado.class))).thenReturn(SimuladoResponseDTO.builder().id(1L).build());
+
+        simuladoService.gerarProva(1L, request);
+
+        ArgumentCaptor<Simulado> captor = ArgumentCaptor.forClass(Simulado.class);
+        verify(simuladoRepository).save(captor.capture());
+        Simulado salvo = captor.getValue();
+
+        assertThat(salvo.getUsuario()).isEqualTo(usuario);
+        assertThat(salvo.getConcurso()).isEqualTo(concurso);
+        assertThat(salvo.getQuantidadeQuestoes()).isEqualTo(3);
+        assertThat(salvo.getQuestoes()).containsExactly(questoesReais.get(0), questoesReais.get(1), questoesReais.get(2));
+        assertThat(salvo.getStatus()).isEqualTo(StatusSimulado.CRIADO);
+    }
+
+    @Test
+    void deveLancarExcecaoAoGerarProvaDeConcursoSemQuestoesReais() {
+        Usuario usuario = Usuario.builder().id(1L).build();
+        Concurso concurso = Concurso.builder().id(7L).build();
+        GerarProvaRequestDTO request = GerarProvaRequestDTO.builder().concursoId(7L).build();
+
+        when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuario));
+        when(concursoRepository.findById(7L)).thenReturn(Optional.of(concurso));
+        when(questaoRepository.findByConcursoAndGeradaPorIAFalseAndAtivaTrueOrderById(concurso))
+                .thenReturn(new ArrayList<>());
+
+        assertThatThrownBy(() -> simuladoService.gerarProva(1L, request))
+                .isInstanceOf(RegraNegocioException.class);
+        verify(simuladoRepository, never()).save(any());
     }
 
     // ---------- iniciar ----------

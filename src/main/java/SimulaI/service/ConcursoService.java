@@ -13,6 +13,9 @@ public interface ConcursoService {
 
     List<ConcursoResponseDTO> listarTodos();
 
+    /** Concursos com pelo menos uma "Prova" real (questões não geradas por IA) disponível. */
+    List<ConcursoResponseDTO> listarProvasDisponiveis();
+
     ConcursoResponseDTO atualizar(Long id, ConcursoRequestDTO request);
 
     void deletar(Long id);

@@ -1,5 +1,6 @@
 import { apiClient } from '../lib/apiClient'
 import type {
+  GerarProvaRequestDTO,
   GerarSimuladoRequestDTO,
   RespostaUsuarioRequestDTO,
   RespostaUsuarioResponseDTO,
@@ -10,6 +11,10 @@ import type {
 
 export function gerar(request: GerarSimuladoRequestDTO) {
   return apiClient.post<SimuladoResponseDTO>('/simulados/gerar', request).then((r) => r.data)
+}
+
+export function gerarProva(request: GerarProvaRequestDTO) {
+  return apiClient.post<SimuladoResponseDTO>('/simulados/gerar-prova', request).then((r) => r.data)
 }
 
 export function buscarPorId(id: number) {
