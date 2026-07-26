@@ -140,7 +140,7 @@ public class GeradorQuestaoIAImpl implements GeradorQuestaoIA {
     }
 
     private String instrucaoAlternativas(TipoQuestao tipo) {
-        return switch (tipo) {
+        String instrucaoBase = switch (tipo) {
             case MULTIPLA_ESCOLHA ->
                     "Forneça exatamente 5 alternativas (letras A a E), com exatamente uma marcada como correta. "
                             + "O campo explicacao é obrigatório: explique de forma clara e completa por que a "
@@ -153,6 +153,19 @@ public class GeradorQuestaoIAImpl implements GeradorQuestaoIA {
                     "Não gere alternativas (retorne lista vazia). O campo explicacao é obrigatório: descreva os "
                             + "pontos que uma resposta completa precisa abordar.";
         };
+
+        String instrucaoTextoPlano = "\nO enunciado é exibido como texto simples, sem nenhuma formatação visual "
+                + "(sem negrito, itálico, sublinhado ou grifo). NUNCA escreva algo como 'o termo sublinhado', "
+                + "'a palavra em negrito' ou 'o trecho grifado' — se precisar se referir a uma palavra ou trecho "
+                + "específico da frase, cite-o entre aspas diretamente no enunciado (ex.: 'qual a função sintática "
+                + "do termo \"rapidamente\" na frase abaixo?').";
+
+        String instrucaoAlternativasDistintas = tipo == TipoQuestao.MULTIPLA_ESCOLHA
+                ? "\nCada uma das 5 alternativas precisa ter um texto totalmente distinto das demais — nunca "
+                        + "repita a mesma alternativa (ou uma alternativa quase idêntica) com letras diferentes."
+                : "";
+
+        return instrucaoBase + instrucaoTextoPlano + instrucaoAlternativasDistintas;
     }
 
     /**
@@ -190,6 +203,16 @@ public class GeradorQuestaoIAImpl implements GeradorQuestaoIA {
                 throw new GeracaoIAException(
                         "A IA retornou %d alternativa(s) marcada(s) como correta; era esperada exatamente 1."
                                 .formatted(corretas));
+            }
+
+            long textosDistintos = alternativas.stream()
+                    .map(alternativa -> alternativa.descricao().strip().toLowerCase())
+                    .distinct()
+                    .count();
+            if (textosDistintos != alternativas.size()) {
+                throw new GeracaoIAException(
+                        "A IA retornou alternativas com texto duplicado (esperava %d textos distintos, veio %d)."
+                                .formatted(alternativas.size(), textosDistintos));
             }
         }
     }

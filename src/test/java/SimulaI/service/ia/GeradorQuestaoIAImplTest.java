@@ -267,6 +267,24 @@ class GeradorQuestaoIAImplTest {
     }
 
     @Test
+    void deveLancarExcecaoQuandoIaRetornaAlternativasComTextoDuplicado() {
+        QuestaoGeradaIA respostaIA = new QuestaoGeradaIA(
+                "Enunciado", "Comentário", "Explicação",
+                List.of(
+                        new AlternativaGeradaIA(LetraAlternativa.A, "Texto igual", true),
+                        new AlternativaGeradaIA(LetraAlternativa.B, "Texto igual", false),
+                        new AlternativaGeradaIA(LetraAlternativa.C, "alternativa c", false),
+                        new AlternativaGeradaIA(LetraAlternativa.D, "alternativa d", false),
+                        new AlternativaGeradaIA(LetraAlternativa.E, "alternativa e", false)));
+
+        when(callResponseSpec.entity(QuestaoGeradaIA.class)).thenReturn(respostaIA);
+
+        assertThatThrownBy(() -> geradorQuestaoIA.gerar(
+                disciplinaTeste(), assuntoTeste(), Dificuldade.MEDIA, TipoQuestao.MULTIPLA_ESCOLHA, null, null, List.of()))
+                .isInstanceOf(GeracaoIAException.class);
+    }
+
+    @Test
     void deveLancarExcecaoQuandoIaNaoRetornaConteudo() {
         when(callResponseSpec.entity(QuestaoGeradaIA.class)).thenReturn(null);
 
